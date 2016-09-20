@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>hello</h2>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script></head>
+<body>
+    <h2>Submit new suggestion</h2>
+    <form action="NewSuggestion" class="new-suggestion">
+        <label for="newPlace">Place: </label>
+        <input type="text" name="newPlace" />
+        <label for="newDescription">Description: </label>
+        <input type="text" name="newDescription" />
+        <button type="submit">Submit</button>
+    </form>
+    <div id="result6"></div>
+    <div id="list"></div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.new-suggestion').submit(function (event) {
+                event.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("NewSuggestion")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        var stringResult = '<ul>';
+                        for (var i = 0; i < result.length; i++) {
+                            stringResult += '<li>' + result[i].place + ',' + result[i].description + '</li>'
+                        }
+                        stringResult += '</ul>';
+                        $('#list').html(stringResult);
+                    }
+                });
+            });
+            
+            $.ajax({
+                url: '@Url.Action("SuggestionList")',
+                type: 'GET',
+                data: $(this).serialize(),
+                dataType: 'Json',
+                success: function (result) {
+                    var stringResult = '<ul>';
+                    for (var i = 0; i < result.length; i++) {
+                        stringResult += '<li>' + result[i].place + ',' + result[i].description + '</li>'
+                    }
+                    stringResult +='</ul>';
+                    $('#list').html(stringResult);
+                }
+            });
+    });
+    </script>
+</body>
+</html>
